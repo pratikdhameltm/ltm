@@ -19,13 +19,13 @@ pipeline {
             agent { label 'build' }
             steps {
                 sh '''
-                    sudo chown jenkins:jenkins /home/jenkins/build
-                    sudo chmod 777 /home/jenkins/build
-                    cd /home/jenkins/build
-                    sudo chown jenkins:jenkins /home/jenkins/build/*
+                    sudo chown jenkins:jenkins /home/jenkins/workspace
+                    sudo chmod 777 /home/jenkins/workspace
+                    cd /home/jenkins/workspace
+                    sudo chown jenkins:jenkins /home/jenkins/workspace/*
                     sudo mvn clean package
                     cd target
-                    cp ROOT.war /home/jenkins/build && cd ..
+                    cp ROOT.war /home/jenkins/workspace && cd ..
                     ls -al
                 '''
             }
@@ -34,13 +34,13 @@ pipeline {
             agent { label 'docker' }
             steps {
                 sh '''
-                    sudo chown jenkins:jenkins /home/jenkins/docker
-                    sudo chmod 777 /home/jenkins/docker
-                    cd /home/jenkins/docker
+                    sudo chown jenkins:jenkins /home/jenkins/workspace
+                    sudo chmod 777 /home/jenkins/workspace
+                    cd /home/jenkins/workspace
                     ls -al
-                    sudo chown jenkins:jenkins /home/jenkins/docker/*
+                    sudo chown jenkins:jenkins /home/jenkins/workspace/*
                     docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                    aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/y5h2u1j4
+                    aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/z2j0s7s0
                     docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_REPO}:${IMAGE_TAG}
                     docker push ${IMAGE_REPO}:${IMAGE_TAG}
                 '''
@@ -54,7 +54,7 @@ cd /home/jenkins/docker
                  sudo kubectl delete deployment tomcat --ignore-not-found=true
                  sudo kubectl delete pods --all --force --grace-period=0
                  sudo kubectl apply -f deployment.yml
-                 sudo kubectl set image deployment/tomcat mindtreerepo="${IMAGE_REPO}:${IMAGE_TAG}" --record
+                 sudo kubectl set image deployment/tomcat mindtree="${IMAGE_REPO}:${IMAGE_TAG}" --record
                  sudo kubectl apply -f svc.yml
               '''
             }
