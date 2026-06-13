@@ -3,7 +3,7 @@ pipeline {
     environment {
         IMAGE_NAME = "mindtree"
         IMAGE_TAG  = "${BUILD_NUMBER}"
-    IMAGE_REPO="public.ecr.aws/z2j0s7s0/mindtree:latest"
+    IMAGE_REPO="public.ecr.aws/z2j0s7s0/mindtree"
     }
     stages {
         stage('Checkout Code') {
